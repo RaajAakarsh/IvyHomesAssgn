@@ -109,15 +109,14 @@ http://35.200.185.69:8000/v2/autocomplete?query=b7
 - **Total Requests Sent:** 8,928
 
 ### Version 2 (v2)
-- **Total Data Points Extracted:** *Pending*
-- **Time Taken:** *Pending*
-- **Total Requests Sent:** *Pending*
+- **Total Data Points Extracted:** 7537
+- **Time Taken:** 38 minutes, 21 seconds
+- **Total Requests Sent:** 1867
+
 
 ### Version 3 (v3)
-- **Total Data Points Extracted:** *Pending*
-- **Time Taken:** *Pending*
-- **Total Requests Sent:** *Pending*
-
+- **Total Data Points Extracted:** 5438
+- **Time Taken:** 18 minutes, 14 seconds
+- **Total Requests Sent:** 1322
 ---
-
 

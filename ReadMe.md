@@ -224,20 +224,17 @@ http://35.200.185.69:8000/v3/autocomplete?query=a
 - **Total Requests Sent:** 8,928
 
 ### Version 2 (v2)
-- **Total Data Points Extracted:** *Pending*
-- **Time Taken:** *Pending*
-- **Total Requests Sent:** *Pending*
+- **Total Data Points Extracted:** 7537
+- **Time Taken:** 38 minutes, 21 seconds
+- **Total Requests Sent:** 1867
 
 ### Version 3 (v3)
-- **Total Data Points Extracted:** *Pending*
-- **Time Taken:** *Pending*
-- **Total Requests Sent:** *Pending*
+- **Total Data Points Extracted:** 5438
+- **Time Taken:** 18 minutes, 14 seconds
+- **Total Requests Sent:** 1322
 ---
 
 ### Please Go through the approach.md file to see the approach used to explore the api and handle the Rate Limits
-
-## 📞 Support
-For any issues or questions, feel free to open an issue or contribute to the project.
 
 Happy coding! 🚀
 

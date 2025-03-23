@@ -1,7 +1,8 @@
 const axios = require("axios");
 
 const BASE_URL = "http://35.200.185.69:8000";
-const VERSIONS = ["v1", "v2", "v3"];
+// const VERSIONS = ["v1", "v2", "v3"];
+const VERSIONS = ["v3"];
 
 const RATE_LIMITS = { v1: 100, v2: 50, v3: 80 };
 const RESULT_LIMITS = { v1: 10, v2: 12, v3: 15 };
@@ -12,12 +13,13 @@ const resultCount = { v1: 0, v2: 0, v3: 0 };
 
 let prevResultLength = 0;
 let prevQuery = "";
-
+let fetchQuery = "";
 // Delay function to make sure that the rate limit does not exceed - for respective versions of the APi
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // Fetch funciton to extract the data for current query and version
 const fetchAPI = async (version, query) => {
+	fetchQuery = query;
 	console.log(
 		`Fetching ${version} => Query: ${query} (Count: ${requestCount[
 			version
@@ -124,6 +126,7 @@ const generateQueryV2 = (lastQuery) => {
 		return prefix;
 	}
 
+	// code to handle queries starting with numbers
 	if (!isNaN(lastQuery[0])) {
 		prefix = lastQuery.slice(0, 2);
 		let chars = prefix.split("");
@@ -135,13 +138,14 @@ const generateQueryV2 = (lastQuery) => {
 				prevQuery = prefix;
 				return null;
 			}
-			chars[0] = String.fromCharCode(chars[0].charCodeAt(0) + 1);
+			prevQuery = prefix;
+			return (chars[0] = String.fromCharCode(chars[0].charCodeAt(0) + 1));
 		}
-
 		prevQuery = prefix;
 		return chars.join("");
 	}
 
+	// code to take care of the part when the last character is "z" , accordingly incrementing
 	if (prefix.endsWith("z") && prefix.length > 1) {
 		let query = prefix.split("");
 
@@ -164,6 +168,32 @@ const generateQueryV2 = (lastQuery) => {
 			prevQuery = prefix;
 			return query.slice(0, -1).join("");
 		}
+	}
+
+	if (prevResultLength < RESULT_LIMITS["v2"] && fetchQuery.length < 3) {
+		let query1 = chars.join("");
+		query1 = query1.slice(0, 2);
+		if (query1 == "zz") {
+			prevQuery = prefix;
+			return "0";
+		}
+		query1 = query1.split("");
+		if (query1[1] === "9") {
+			query1[1] = "a";
+			prevQuery = prefix;
+			return query1.join("");
+		}
+		if (
+			(query1[1] < "z" && query1[1] >= "a") ||
+			(query1[1] < "9" && query1[1] >= "0")
+		) {
+			query1[1] = String.fromCharCode(query1[1].charCodeAt(0) + 1);
+		} else {
+			query1[1] = "";
+			query1[0] = String.fromCharCode(query1[0].charCodeAt(0) + 1);
+		}
+		prevQuery = prefix;
+		return query1.join("");
 	}
 
 	for (let i = chars.length - 1; i >= 0; i--) {
@@ -196,6 +226,14 @@ const generateQueryV3 = (lastQuery) => {
 		return prefix;
 	}
 
+	if (
+		!(chars[1] <= "0" && chars[1] > "9") &&
+		!(chars[1] >= "a" && chars[1] <= "z")
+	) {
+		chars[1] = "a";
+		chars[2] = "";
+	}
+
 	// if the first characters are numbers then the following logic will happen
 	if (!isNaN(lastQuery[0])) {
 		// taking only first 2 characters
@@ -214,8 +252,8 @@ const generateQueryV3 = (lastQuery) => {
 				prevQuery = prefix;
 				return null;
 			}
-
 			chars[0] = String.fromCharCode(chars[0].charCodeAt(0) + 1);
+			prevQuery = prefix;
 			return chars[0];
 		}
 
@@ -255,7 +293,33 @@ const generateQueryV3 = (lastQuery) => {
 		}
 	}
 
-	// queries staring with alphabets
+	if (prevResultLength < RESULT_LIMITS["v3"] && fetchQuery.length < 3) {
+		let query1 = chars.join("");
+		query1 = query1.slice(0, 2);
+		if (query1 == "zz") {
+			prevQuery = prefix;
+			return "0";
+		}
+		query1 = query1.split("");
+		if (query1[1] === "9") {
+			query1[1] = "a";
+			prevQuery = prefix;
+			return query1.join("");
+		}
+		if (
+			(query1[1] < "z" && query1[1] >= "a") ||
+			(query1[1] < "9" && query1[1] >= "0")
+		) {
+			query1[1] = String.fromCharCode(query1[1].charCodeAt(0) + 1);
+		} else {
+			query1[1] = "";
+			query1[0] = String.fromCharCode(query1[0].charCodeAt(0) + 1);
+		}
+		prevQuery = prefix;
+		return query1.join("");
+	}
+
+	// code for queries staring with alphabets
 	for (let i = chars.length - 1; i >= 0; i--) {
 		if (chars[i] === "9") {
 			chars[i] = "a";
