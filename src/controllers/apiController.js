@@ -1,8 +1,7 @@
 const axios = require("axios");
 
 const BASE_URL = "http://35.200.185.69:8000";
-// const VERSIONS = ["v1", "v2", "v3"];
-const VERSIONS = ["v2"];
+const VERSIONS = ["v1", "v2", "v3"];
 
 const RATE_LIMITS = { v1: 100, v2: 50, v3: 80 };
 const RESULT_LIMITS = { v1: 10, v2: 12, v3: 15 };
