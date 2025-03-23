@@ -1,19 +1,16 @@
 const axios = require("axios");
 
 const BASE_URL = "http://35.200.185.69:8000";
-// const VERSIONS = ["v1", "v2", "v3"];
-const VERSIONS = ["v3"];
-
+const VERSIONS = ["v1", "v2", "v3"];
 const RATE_LIMITS = { v1: 100, v2: 50, v3: 80 };
 const RESULT_LIMITS = { v1: 10, v2: 12, v3: 15 };
-
 const extractedData = { v1: new Set(), v2: new Set(), v3: new Set() };
 const requestCount = { v1: 0, v2: 0, v3: 0 };
 const resultCount = { v1: 0, v2: 0, v3: 0 };
-
 let prevResultLength = 0;
 let prevQuery = "";
 let fetchQuery = "";
+
 // Delay function to make sure that the rate limit does not exceed - for respective versions of the APi
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -26,7 +23,6 @@ const fetchAPI = async (version, query) => {
 		]++}) `
 	);
 	console.log(resultCount);
-
 	try {
 		const response = await axios.get(
 			`${BASE_URL}/${version}/autocomplete?query=${query}`
@@ -42,7 +38,6 @@ const fetchAPI = async (version, query) => {
 			`Error fetching ${version} with query '${query}':`,
 			error.response?.data || error.message
 		);
-
 		if (
 			error.response?.data?.detail?.includes(
 				`${RATE_LIMITS[version]} per 1 minute`
@@ -52,7 +47,6 @@ const fetchAPI = async (version, query) => {
 			await delay(60000);
 			return fetchAPI(version, query);
 		}
-
 		return [];
 	}
 };
